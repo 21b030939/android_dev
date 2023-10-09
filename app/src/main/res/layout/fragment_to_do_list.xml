@@ -5,12 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".demo.FragmentOne">
+    tools:context=".demo.FragmentToDoList">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/to_do_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <ImageButton
+        android:id="@+id/add_to_do_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:background="@color/white"
+        android:src="@drawable/baseline_add_circle_24"/>
 
 </FrameLayout>

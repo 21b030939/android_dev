@@ -6,19 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
+import com.example.first_lab.R
 import com.example.first_lab.adapter.ToDoListAdapter
-import com.example.first_lab.databinding.FragmentOneBinding
+import com.example.first_lab.databinding.FragmentToDoListBinding
+import com.example.first_lab.db.ToDoListDatabase
 import com.example.first_lab.model.ToDoItem
+import com.example.first_lab.model.toDoItemMapper
 import java.util.UUID
 
-class FragmentOne : Fragment() {
 
-    private var _binding: FragmentOneBinding? = null
-        private val binding
+class FragmentToDoList : Fragment() {
+
+    private var _binding: FragmentToDoListBinding? = null
+    private val binding
         get() = _binding!!
 
     companion object {
-        fun newInstance() = FragmentOne()
+        fun newInstance() = FragmentToDoList()
     }
 
     private var toDoListAdapter: ToDoListAdapter? = null
@@ -48,12 +53,20 @@ class FragmentOne : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentOneBinding.inflate(inflater, container, false)
+        _binding = FragmentToDoListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?){
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val db = Room.databaseBuilder(
+            requireContext(),
+            ToDoListDatabase::class.java, "todo-database"
+        ).allowMainThreadQueries().build()
+
+        val dao = db.toDoDao()
+        val savedToDoList = dao.getToDoList()
 
         toDoListAdapter = ToDoListAdapter()
 
@@ -64,11 +77,33 @@ class FragmentOne : Fragment() {
             false
         )
 
+        binding.addToDoButton.setOnClickListener {
+            val fragment = FragmentAddToDo.newInstance()
+
+            parentFragmentManager
+                .beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.fragment_container_view, fragment)
+                .commit()
+        }
+
         toDoListAdapter?.onToDoItemClicked = { toDoItem ->
             updateToDoItem(toDoItem)
         }
 
-        submitList(items)
+        toDoListAdapter?.onToDoItemRemoved = { toDoItem ->
+            val newList = items.filter {
+                it != toDoItem
+            }
+            items = newList
+            submitList(newList)
+        }
+
+        if(savedToDoList.isEmpty()){
+            submitList(items)
+        } else {
+            submitList(savedToDoList.map(toDoItemMapper))
+        }
     }
 
     private fun updateToDoItem(toDoItem: ToDoItem) {
