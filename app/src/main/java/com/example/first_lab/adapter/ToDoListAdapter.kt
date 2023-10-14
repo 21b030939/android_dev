@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.first_lab.R
 import com.example.first_lab.databinding.ItemToDoBinding
+import com.example.first_lab.demo.fragments.FragmentAddToDo
+import com.example.first_lab.demo.fragments.FragmentToDoDetails
 import com.example.first_lab.diffutil.ToDoListDiffUtilCallback
 import com.example.first_lab.model.ToDoItem
 
@@ -46,8 +48,18 @@ class ToDoListAdapter:ListAdapter<ToDoItem, ToDoListAdapter.ViewHolder>(ToDoList
                 binding.checkMark.setImageResource(R.drawable.baseline_radio_button_unchecked_24)
             }
 
-            binding.root.setOnClickListener{
+            binding.checkMark.setOnClickListener{
                 onToDoItemClicked?.invoke(toDoItem)
+            }
+
+            binding.root.setOnClickListener{
+                val fragment = FragmentToDoDetails.newInstance()
+
+                parentFragmentManager
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.fragment_container_view, fragment)
+                    .commit()
             }
 
             binding.deleteToDo.setOnClickListener {

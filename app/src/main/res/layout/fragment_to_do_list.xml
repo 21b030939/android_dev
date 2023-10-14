@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".demo.FragmentToDoList">
+    tools:context=".demo.fragments.FragmentToDoList">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/to_do_list"

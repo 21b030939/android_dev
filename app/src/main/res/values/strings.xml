@@ -6,4 +6,5 @@
     <string name="to_do_description">To Do Description</string>
     <string name="to_do_details_asking">Please write here to-do details:</string>
     <string name="add_new_todo_button">Add new todo button</string>
+    <string name="add_button_text">Add</string>
 </resources>
